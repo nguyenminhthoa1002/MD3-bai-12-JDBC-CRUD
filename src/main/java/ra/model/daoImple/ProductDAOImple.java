@@ -140,6 +140,31 @@ public class ProductDAOImple implements IProductDAO<Product,String> {
 
     @Override
     public List<Product> searchProductByName(String name) {
-        return null;
+        Connection conn = null;
+        CallableStatement callSt = null;
+        List<Product> listSearchProduct= null;
+        try {
+            conn = ConnectionDB.openConnection();
+            callSt = conn.prepareCall("{call proc_getProductByName(?)}");
+            callSt.setString(1,name);
+            ResultSet rs = callSt.executeQuery();
+            listSearchProduct = new ArrayList<>();
+            while (rs.next()){
+                Product pro = new Product();
+                pro.setProductId(rs.getString("productId"));
+                pro.setProductName(rs.getString("productName"));
+                pro.setImportPrice(rs.getFloat("importPrice"));
+                pro.setDescriptions(rs.getString("descriptions"));
+                pro.setProductStatus(rs.getBoolean("productStatus"));
+                pro.setDateInputProduct(rs.getDate("dateInputProduct"));
+
+                listSearchProduct.add(pro);
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+        } finally {
+            ConnectionDB.closeConnection(conn,callSt);
+        }
+        return listSearchProduct;
     }
 }

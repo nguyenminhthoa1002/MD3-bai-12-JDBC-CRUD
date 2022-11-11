@@ -46,19 +46,20 @@ public class productServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
-        Product pro = new Product();
-        pro.setProductId(request.getParameter("productId"));
-        pro.setProductName(request.getParameter("productName"));
-        pro.setImportPrice(Float.parseFloat(request.getParameter("importPrice")));
-        pro.setDescriptions(request.getParameter("descriptions"));
-        pro.setProductStatus(Boolean.parseBoolean(request.getParameter("productStatus")));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            pro.setDateInputProduct(sdf.parse(request.getParameter("dateInputProduct")));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+
         if (action!=null&&action.equals("Create")){
+            Product pro = new Product();
+            pro.setProductId(request.getParameter("productId"));
+            pro.setProductName(request.getParameter("productName"));
+            pro.setImportPrice(Float.parseFloat(request.getParameter("importPrice")));
+            pro.setDescriptions(request.getParameter("descriptions"));
+            pro.setProductStatus(Boolean.parseBoolean(request.getParameter("productStatus")));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                pro.setDateInputProduct(sdf.parse(request.getParameter("dateInputProduct")));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
             boolean result = productService.save(pro);
             if (result){
                 getAllProduct(request,response);
@@ -66,13 +67,32 @@ public class productServlet extends HttpServlet {
                 request.getRequestDispatcher("views/error.jsp").forward(request,response);
             }
         } else if (action!= null && action.equals("Update")) {
+            Product pro = new Product();
+            pro.setProductId(request.getParameter("productId"));
+            pro.setProductName(request.getParameter("productName"));
+            pro.setImportPrice(Float.parseFloat(request.getParameter("importPrice")));
+            pro.setDescriptions(request.getParameter("descriptions"));
+            pro.setProductStatus(Boolean.parseBoolean(request.getParameter("productStatus")));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                pro.setDateInputProduct(sdf.parse(request.getParameter("dateInputProduct")));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
             boolean result = productService.update(pro);
             if (result){
                 getAllProduct(request,response);
             } else {
                 request.getRequestDispatcher("views/error.jsp").forward(request,response);
             }
+        } else if (action!=null&&action.equals("Search")) {
+            List<Product> listProductSearch = productService.searchProductByName(request.getParameter("searchName"));
+            if (listProductSearch==null){
+                getAllProduct(request,response);
+            } else {
+                request.setAttribute("listProduct",listProductSearch);
+                request.getRequestDispatcher("views/product.jsp").forward(request,response);
+            }
         }
     }
-
 }

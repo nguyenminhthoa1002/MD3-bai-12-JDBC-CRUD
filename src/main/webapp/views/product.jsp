@@ -43,6 +43,9 @@
     </tbody>
 </table>
 <a href="views/newProduct.jsp">Create new product</a>
-
+<form action="<%=request.getContextPath()%>/productServlet" method="post">
+    <input type="text" name="searchName">
+    <input type="submit" value="Search" name="action">
+</form>
 </body>
 </html>

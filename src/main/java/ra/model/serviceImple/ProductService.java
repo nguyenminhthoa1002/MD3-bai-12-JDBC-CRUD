@@ -36,6 +36,6 @@ public class ProductService implements IProductService<Product,String> {
 
     @Override
     public List<Product> searchProductByName(String name) {
-        return null;
+        return productDAO.searchProductByName(name);
     }
 }
